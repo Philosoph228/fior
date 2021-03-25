@@ -1,3 +1,16 @@
+var _chat = null;
+
+(function() {
+  var script = document.createElement('script');
+  script.src = chrome.runtime.getURL('inject.js');
+  document.head.appendChild(script);
+
+  document.addEventListener("botdata", function (e) {
+    _chat = e.chat;
+    console.log('received', _chat);
+  });
+})();
+
 (() => {
   let box = document.createElement("div");
   box.id = "bot_popup";
@@ -78,7 +91,7 @@
   actionBtn.innerText = "Do stuff";
   actionBtn.addEventListener('click', (evt) => {
     try {
-      document.window.chat.sendMessage("Hello!");
+      _chat.sendMessage("Hello!");
     }
     catch (ex) {
       let box = evt.target.closest("#bot_popup"); 

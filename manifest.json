@@ -15,7 +15,14 @@
     {
       "matches": ["*://*.chatvdvoem.ru/*"],
       "css": ["bot.css"],
-      "js": ["bot.js"]
+      "js": ["bot.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["inject.js"],
+      "matches": ["*://*.chatvdvoem.ru/*"]
     }
   ]
 }
