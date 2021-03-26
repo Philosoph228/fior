@@ -64,6 +64,71 @@
 
   let replyInput = document.createElement("input");
 
+
+  // Begin table
+  let editableNow = null;
+  
+  function cellEdit(evt) {
+    if (editableNow)
+    {
+      editableNow.contentEditable = false;
+      editableNow.classList.remove('editable');
+    }
+  
+    let el = evt.target;
+    el.contentEditable = true;
+    el.classList.add('editable');
+    el.focus();
+  
+    editableNow = el;
+    
+    el.addEventListener("keydown", ({key}) => {
+      if (key === "Enter" || key === "Escape") {
+        if (editableNow)
+        {
+          editableNow.contentEditable = false;
+          editableNow.classList.remove('editable');
+        }
+      }
+    })
+    
+    document.body.addEventListener('mousedown', (e) => {
+      if (editableNow && e.target != editableNow) {
+        editableNow.contentEditable = false;
+        editableNow.classList.remove('editable');
+      }
+      
+      document.removeEventListener('mousedown', this, true);
+    });
+  }
+  
+  let template = document.createElement('template');
+  template.innerHTML = '<tr><td></td><td></td><td></td></tr>';
+  
+  let tableTemplate = document.createElement('template');
+  tableTemplate.innerHTML = `
+    <table id="data_table">
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+    <tbody>
+    </tbody>
+  </table>
+  `;
+  
+  function rowRemover(evt) {
+    evt.target.closest('tr').remove();
+  }
+  
+  let tableNode = tableTemplate.content.cloneNode(true);
+  let headerData = tableNode.querySelectorAll('th');
+  headerData[0].innerText = 'Match Pattern';
+  headerData[1].innerText = 'Replacement'
+
   let content = document.createElement("div");
   content.classList.add("bot-ns", "content");
 
@@ -71,6 +136,7 @@
   content.appendChild(regexInput);
   content.appendChild(replyInputSpan);
   content.appendChild(replyInput);
+  content.appendChild(tableNode);
 
   let actionBtn = document.createElement("button");
 
@@ -86,6 +152,8 @@
       log.innerText = ex;
     }
   });
+  
+  // End table
 
   let logArea = document.createElement("textarea");
 
@@ -96,6 +164,24 @@
   box.appendChild(content);
 
   document.body.appendChild(box);
+  
+  for (let i = 0; i < 10; ++i)
+  {
+    let node = template.content.cloneNode(true);
+    let rowData = node.querySelectorAll('td');
+    rowData[0].innerText = 'All';
+    rowData[1].innerText = 'Hello ' + i;
+    
+    let deleteBtn = document.createElement('button');
+    deleteBtn.innerHTML = '&#x1F5D1;';
+    deleteBtn.addEventListener('click', rowRemover, true);
+    
+    rowData[0].addEventListener('dblclick', cellEdit);
+    rowData[1].addEventListener('dblclick', cellEdit);
+    rowData[2].appendChild(deleteBtn);
+    
+    document.body.querySelector('#data_table tbody').appendChild(node);
+  }
 })();
 
 

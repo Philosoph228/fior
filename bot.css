@@ -103,3 +103,45 @@
   background-color:#444;
   color: #eee;
 }
+
+table#data_table thead th:first-child {
+  border-radius: 3px 0 0 0;
+}
+
+table#data_table thead th:last-child {
+  border-radius: 0 3px 0 0;
+}
+
+table#data_table {
+  border-spacing: 0;
+  user-select: none;
+  background-color: #fff;
+  border-radius: 3px 3px 0 0;
+}
+
+table#data_table thead th{
+  background-color: #333;
+  color: #eee;
+}
+
+table#data_table tbody td {
+  font-family: monospace;
+}
+
+table#data_table td, table#data_table th {
+  margin: .2em .5em;
+  padding: .2em .5em;
+}
+
+table#data_table tbody tr:nth-child(even) {
+  background-color: #f4f4f4;
+}
+
+table#data_table tbody tr:hover {
+  background-color: #ddddff !important;
+}
+
+.editable {
+  background-color: #fff;
+  outline: 1px solid #333;
+}
