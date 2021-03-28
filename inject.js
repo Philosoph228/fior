@@ -21,12 +21,12 @@ function onMessageReceived(content)
   var answer = parseInt(content.replace(/\D/g, ""));
   var valid = answer == desiredAnswer;
 
-  if (valid) {
-    desiredAnswer -= 7;
-  }
-
   if (valid || !delayMutex)
   {
+    if (valid) {
+      desiredAnswer -= 7;
+    }
+
     delayMutex = true;
     chat.setStartedTyping();
 
