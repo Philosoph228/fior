@@ -15,6 +15,7 @@ if (chat !== undefined && chat != null)
 
 var desiredAnswer = 993;
 var delayMutex = false;
+var timeout = null;
 
 function onMessageReceived(content)
 {
@@ -27,11 +28,13 @@ function onMessageReceived(content)
       desiredAnswer -= 7;
     }
 
+    clearTimeout(timeout);
+
     delayMutex = true;
     chat.setStartedTyping();
 
-    setTimeout(() => {
-      setTimeout(() => {
+    timeout = setTimeout(() => {
+      timeout = setTimeout(() => {
         chat.setFinishedTyping();    
         chat.sendMessage((desiredAnswer + 7) + "-7?");
 
