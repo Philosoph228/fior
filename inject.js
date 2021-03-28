@@ -1,3 +1,46 @@
+// Register receive hook
+if (chat !== undefined && chat != null)
+{
+  chat._actualReceiveMessage = chat._receiveMessage;
+
+  chat._receiveMessage= function(sent, content, ratio, id, expires, timerSet, imageExpires, imagesTimerSet) {
+    if (sent == chat.MessageSent.FROM) {
+      onMessageReceived(content);
+    }
+
+    return chat._actualReceiveMessage(sent, content, ratio, id, expires, timerSet, imageExpires, imagesTimerSet);
+  }
+}
+// End receive hook registration
+
+var desiredAnswer = 993;
+var delayMutex = false;
+
+function onMessageReceived(content)
+{
+  var answer = parseInt(content.replace(/\D/g, ""));
+  var valid = answer == desiredAnswer;
+
+  if (valid) {
+    desiredAnswer -= 7;
+  }
+
+  if (valid || !delayMutex)
+  {
+    delayMutex = true;
+    chat.setStartedTyping();
+
+    setTimeout(() => {
+      setTimeout(() => {
+        chat.setFinishedTyping();    
+        chat.sendMessage((desiredAnswer + 7) + "-7?");
+
+      }, 4000 + Math.random() * 4000);
+      delayMutex = false;
+    }, 4000 + Math.random() * 4000);
+  }
+}
+
 (() => {
   let box = document.createElement("div");
   box.id = "bot_popup";
@@ -144,7 +187,8 @@
   actionBtn.innerText = "Do stuff";
   actionBtn.addEventListener('click', (evt) => {
     try {
-      chat.sendMessage("Hello!");
+      chat.sendMessage(messageFormer());
+      state -= 7;
     }
     catch (ex) {
       let box = evt.target.closest("#bot_popup"); 
