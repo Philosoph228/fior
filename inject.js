@@ -31,9 +31,9 @@ function onMessageReceived(content)
     clearTimeout(timeout);
 
     delayMutex = true;
-    chat.setStartedTyping();
 
     timeout = setTimeout(() => {
+      chat.setStartedTyping();
       timeout = setTimeout(() => {
         chat.setFinishedTyping();    
         chat.sendMessage((desiredAnswer + 7) + "-7?");
