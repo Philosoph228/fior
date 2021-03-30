@@ -26,6 +26,8 @@ function onMessageReceived(content)
   {
     if (valid) {
       desiredAnswer -= 7;
+    } else if (!isNaN(answer)) {
+      desiredAnswer = 993;
     }
 
     clearTimeout(timeout);
