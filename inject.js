@@ -40,9 +40,9 @@ function onMessageReceived(content)
         chat.setFinishedTyping();    
         chat.sendMessage((desiredAnswer + 7) + "-7?");
 
-      }, 4000 + Math.random() * 4000);
+      }, 3000 + Math.random() * 3000);
       delayMutex = false;
-    }, 4000 + Math.random() * 4000);
+    }, 3000 + Math.random() * 3000);
   }
 }
 
