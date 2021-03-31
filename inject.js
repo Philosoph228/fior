@@ -1,50 +1,59 @@
-// Register receive hook
-if (chat !== undefined && chat != null)
-{
-  chat._actualReceiveMessage = chat._receiveMessage;
+class Bot {
+  constructor() {
+    this.desiredAnswer = 993;
+    this.delayMutex = false;
 
-  chat._receiveMessage= function(sent, content, ratio, id, expires, timerSet, imageExpires, imagesTimerSet) {
-    if (sent == chat.MessageSent.FROM) {
-      onMessageReceived(content);
-    }
-
-    return chat._actualReceiveMessage(sent, content, ratio, id, expires, timerSet, imageExpires, imagesTimerSet);
+    chat.addEventListener(chat.Event.CONNECTED, this.resetState.bind(this));
+    chat.addEventListener(chat.Event.DISCONNECTED, this.resetState.bind(this));
+    chat.addEventListener(chat.Event.MESSAGE_RECEIVED, this.onMessageReceived.bind(this));
   }
-}
-// End receive hook registration
 
-var desiredAnswer = 993;
-var delayMutex = false;
-var timeout = null;
+  resetState() {
+    this.delayMutex = false;
+    this.desiredAnswer = 993;
 
-function onMessageReceived(content)
-{
-  var answer = parseInt(content.replace(/\D/g, ""));
-  var valid = answer == desiredAnswer;
+    clearTimeout(this.writingTimeout);
 
-  if (valid || !delayMutex)
-  {
-    if (valid) {
-      desiredAnswer -= 7;
-    } else if (!isNaN(answer)) {
-      desiredAnswer = 993;
+    this.writingTimeout = null;
+  }
+
+  onMessageReceived(type, content) {
+    if (type != chat.MessageType.TEXT) {
+      return;
     }
 
-    clearTimeout(timeout);
+    let answer = parseInt(content.replace(/\D/g, ""));
+    let valid = answer == this.desiredAnswer;
 
-    delayMutex = true;
+    if (!valid && this.delayMutex) {
+      return;
+    }
 
-    timeout = setTimeout(() => {
+    this.delayMutex = true;
+
+    if (valid) {
+      this.desiredAnswer -= 7;
+    }
+    else if (!isNaN(answer)) {
+      this.desiredAnswer = 993;
+    }
+
+    clearTimeout(this.writingTimeout);
+
+    this.writingTimeout = setTimeout(() => {
       chat.setStartedTyping();
-      timeout = setTimeout(() => {
-        chat.setFinishedTyping();    
-        chat.sendMessage((desiredAnswer + 7) + "-7?");
 
+      this.writingTimeout = setTimeout(() => {
+        chat.setFinishedTyping();    
+        chat.sendMessage((this.desiredAnswer + 7) + "-7?");
+
+        this.delayMutex = false;
       }, 3000 + Math.random() * 3000);
-      delayMutex = false;
     }, 3000 + Math.random() * 3000);
   }
 }
+
+var bot = new Bot(); 
 
 (() => {
   let box = document.createElement("div");
