@@ -6,6 +6,22 @@ class Bot {
     this.insulted = false;
     this.swearCautionedTimes = 0;
     this.praiseCounter = 0;
+    this.messageCounter = 0;
+    this.cuckMode = false;
+    this.failCounter = 0;
+    this.running = true;
+
+    this.cuckGenderReply = [
+      "д",
+      "Д",
+      "ж",
+      "Ж"
+    ];
+
+    this.zakatLyrics = [
+      "Фотографирую закат",
+      "Будто пару лет назад"
+    ];
 
     this.praises = [
       "Ты молодец!",
@@ -15,11 +31,30 @@ class Bot {
       "Ты мастер на все руки!"
     ];
 
+    this.forgives = [
+      "Прощаю",
+      "Ладно. Прощаю.",
+      "Мир?",
+      "Хорошо. Я тебя прощаю",
+      "Пообещай что больше такого не повторится",
+      "Больше такого не пиши"
+    ];
+
     this.greetings = [
       "прив",
-      "Хай!",
+      "привет",
+      "ghbdtn",
       "Привет!",
-      "Здравствуй"
+      "Хай!",
+      "Хеллоу",
+      "Здравствуй",
+      "Здравствуйте",
+      "Доброго времени суток",
+      "конничива",
+      "Салют",
+      "Шалом",
+      "Асалам Алейкум!",
+      "%daytime_greeting%"
     ];
 
     this.insultedReplies = [
@@ -33,26 +68,113 @@ class Bot {
     this.noSwearPrays = [
       "Не матерись пожалуйста у меня бабушка в комнате",
       "Пожалуйста не матерись, у меня бабушка в комнате",
-      "У меня бабушка в комнате, не матерись пожалуйста!"
+      "У меня бабушка в комнате, не матерись пожалуйста!",
+      "Бабушка за спиной, не матерись пожалуйста"
+    ];
+
+    this.finalSwearCautions = [
+      "Ну я же просил не материться",
+      "Ну я же попросил не материться",
+      "Это последнее предупреждение",
+      "Это последнее предупреждение насчёт мата."
+    ];
+
+    this.kanekiNames = [
+      "Канеки",
+      "Kен Канеки",
+      "Канеки. Кен Канеки.",
+      "Я уже давно мёртв внутри. Зачем тебе моё имя?"
     ];
 
     this.motivationStrings = [
       "У тебя всё получится!",
       "Я в тебя верю",
+      "Я верю в тебя",
       "Давай eщё раз?",
       "Не отчаивайся",
+      "Пожалуйста",
       "Я. Жe. Гуль.",
-      "Отвечай",
+      "Я. Жи. Гуль.",
+      "Я. Гуль.",
+      "Я гуль.",
+      "Этот мир прогнил. Не осталось ничего кроме боли.",
+      "Дед инсайд",
       "Сколько?",
+      "Сколько будет?",
+      "Отвечай",
+      "Отвечай на вопрос",
+      "Ответь на вопрос",
+      "Ответ сюда",
+      "Может посчитаем?",
+      "Как ты?",
       "Ты умён",
+      "Что с лицом?",
       "Ну?",
+      "Ну же",
+      "Мда",
       "Мда...",
       "Не тупи",
+      "Не кисни",
+      "Развиваем устный счёт.",
       "Я умер, прости",
+      "Я уже погиб.",
       "Неизвестная команда. Для справки наберите /help",
       "Подготовьте номер паблик стейтик джава точка ланг точка обжектрy точка" +
         " чат фанкшнс точка аэф джава точка ланг точка булеан джава точка ланг" +
         " точка обжект джава точка ланг точка обжект ноль равно равно один"
+    ];
+
+    this.ensuranceQuestions = [
+      "Уверен?",
+      "Ты уверен?",
+      "Ты в этом уверен?",
+      "Точно?",
+      "Это окончательный ответ?",
+      "Ваш окончательный ответ?"
+    ];
+
+    this.disappointments = [
+      "Я разочарован",
+      "Ломаю шмотки команда раков",
+      "Неправильно.",
+      "Ответ неверный",
+      "Ответ неверный, начнём сначала",
+      "Здоровья маме"
+    ];
+
+    this.gawrGura = [
+      "--------------------------------------------------------------------------------------------------------mш:------------------\n" +
+      "-----------------------------------------------------------------------------------------------------------mцL---------------\n" +
+      "-----------------------------------------------------------------------------------------------------------нfбШo:-----------\n" +
+      "-----------------------------------------------------------------------------------------------------------нФmЬv----------\n" +
+      "---------------------------------------------------чФДggggggggJJBbn------------------------------mIsHw----------\n" +
+      "--------------------------------------------mBgggggggggggggggggg@и:-----------------------нGtQu----------\n" +
+      "----------------------------------------yjДфДggДЮн::--------т;wI#ДggБбДR:------------------чЖhKн-----------\n" +
+      "------------------------------------r#ggggJЭ::-----------:----::-----------mБJggg@i--------------mtyXЁ::-----------\n" +
+      "----------------------------------DgggW:---------uштыysstU:my---------mДgggL:-----------ЧRЖRjj:-----------\n" +
+      "-------------------------------mggЩ--------VSnv;mч:----:----нч:тnЪx--------ЪggДs----------QBQвЮ---------\n" +
+      "-----------------------------чЁggL-----тv-тCTЧ---чzт-------------тциV--L:::----wjg@i----------VGIII#ДJjБЬr::\n" +
+      "------------------------mBggBr---:т:mBДт-----тzБS----т::---нs-----oДM::m---шgggЮ---------mfBJJJJJJgЁЁ\n" +
+      "--------------------тRggggBч--тtgj#rчЧ:-чLЮRДG;-unhrт#Ъr---SЪ-mДBч--шgggg@;----------:rЧфjgg\n" +
+      "----------------mjggJJBjJgЭ---xД::----;щmtt;тuфБ#юhmVCvнyт-sбIs----nБT--шgjjjДJggЖ:---------------\n" +
+      "-------------vБggД@BJgv---нm-----т;u::--------------------------------:::тr------Ch:---EJДЁ@ДggE----------т:\n" +
+      "-----------TggggggggЙr--oG:-----mвRДgggb:-------------шgggДБDv:--:---цh---ыggJggggggL:-------:::\n" +
+      "----------шgJjЁBjДЁgg::---DK:----тTt---zIбДJEr-------------mJgБEi---oL:::---mD:---#gBДД@BgIz---------\n" +
+      "------------------------шK:---Ъfn-----:rч::--------------------------------:--:т;u:-----юв;---ЪБi-----------------------\n" +
+      "------------------------mБL---yн-------mv:---------------------------------тLr-------mr---щjh-----------------------\n" +
+      "--------------------------gg---тni::---тr-т:U------------::-----т-----------iix:-т:----mv:::-xjJю------------------------\n" +
+      "---------------------------Щa----тт:--шUШjЮ;--------------------тHfфyzAL--тч:----FЩ;-------------------------\n" +
+      "-----------------------------:JJЭ-----L::-щЧшДJЁgJДSVчrтLyEggДJJJO;:Ъm-u:----m#----------------------------\n" +
+      "------------------------------uбЬr-mц-uDт::---oRLrЫиmWmЙ:---::mKI:-As:-m#щ----------------------------\n" +
+      "-----:т:---------------------т:-тнттvsIIнztи:--------------::-------------mютShu:т:Ч:т::----------------------------\n" +
+      "--------т:-------------------т--------------тmiizт::т::т:::тzUuuтт:::тцЧLт:-------------::-----------------------------\n" +
+      "----------т----------------ЮJRtu:-----------------rттu::-------:тч::::-----------------mGДБ:--------------------------\n" +
+      "----------т:---------------#gggggJ@Sx:------------mGЧшSt;;------------тobBgggggЩ:-------------------------\n" +
+      "--------тvv-------------nBДБ@ДJJJggggg@IHv-----mGv:-----mX@ggggggДB@Ёgjj:-------------------------\n" +
+      "----ттunn-------------DgjЁЁБ@@BBjJJgЮДJggДahФDДgggЫ#gДДBB@@Ё@JJЖ:-----------------------\n" +
+      "::-------::--------------hjДБRбБ@RБRБRBsmJДБBgggggД@Бg:тz@ЙЁRЁЁjЁRЙЁjg#-----------------------\n" +
+      "***\n" +
+      "А"
     ];
 
     chat.addEventListener(chat.Event.CONNECTED, this.onConnect.bind(this));
@@ -77,12 +199,35 @@ class Bot {
     this.insulted = false;
     this.swearCautionedTimes = 0;
     this.praiseCounter = 0;
+    this.messageCounter = 0;
+    this.cuckMode = false;
+    this.failCounter = 0;
+    this.running = true;
 
     clearTimeout(this.greetingTimerHandle);
     this.greetingTimerHandle = null;
 
     clearTimeout(this.writingTimerHandle);
     this.writingTimerHandle = null;
+  }
+
+  booleanRandom()
+  {
+    return Math.random() < 0.5;
+  }
+
+  expressResentment()
+  {
+    // Промолчать с 50% шансом
+    if (this.booleanRandom())
+    {
+      this.writeMessageSimulated(this.getRandomString(this.insultedReplies));
+    }
+  }
+
+  writeMessageInstant(message)
+  {
+    chat.sendMessage(message);
   }
 
   writeMessageSimulated(message, callback = null)
@@ -117,8 +262,62 @@ class Bot {
   {
     this.resetState();
 
+    let greetingMessage = this.getRandomString(this.greetings);
+    if (greetingMessage == "%daytime_greeting%") {
+
+      let greetingMessage = "";
+
+      var d = new Date();
+      var hour = d.getHours();
+
+      if (hour < 6)
+      {
+        let variants = [
+          "Доброй ночи",
+          "Доброй ночки",
+          "ночи",
+          "Ночь в хату",
+          "Ночь на дворе",
+        ];
+        greetingMessage = this.getRandomString(variants);
+      }
+      else if (hour < 12)
+      {
+        let variants = [
+          "Утречка!",
+          "Доброе утро",
+          "Доброе утречко",
+          "Доброго утра",
+          "утра",
+          "Утро в хату"
+        ];
+        greetingMessage = this.getRandomString(variants);
+      }
+      else if (hour < 17)
+      {
+        let variants = [
+          "День добрый",
+          "Добрый день!",
+          "Доброго дня!"
+        ];
+        greetingMessage = this.getRandomString(variants);
+      }
+      else
+      {
+        let variants = [
+          "Добрый вечер",
+          "Доброго вечера",
+          "Доброго вечерочка",
+          "Добрейшего вечерочка!",
+          "Вечер в хату",
+          "С вечерком"
+        ];
+        greetingMessage = this.getRandomString(variants);
+      }
+    }
+
     this.greetingTimerHandle = setTimeout(() => {
-      this.writeMessageSimulated(this.getRandomString(this.greetings),
+      this.writeMessageSimulated(greetingMessage,
       () => {
         this.askEquationSimulated();
       });
@@ -126,63 +325,154 @@ class Bot {
   }
 
   onMessageReceived(type, content) {
-    clearTimeout(this.greetingTimerHandle);
-
     if (type != chat.MessageType.TEXT) {
       return;
     }
 
-    if (this.insulted && content.match(/про(cти|щен)|извин/g) != null)
+    this.messageCounter++;
+    clearTimeout(this.greetingTimerHandle);
+
+    if (!this.running)
+    {
+      return;
+    }
+
+    // Специальный режим для тех, кто пишет "М" в начале беседы
+    if (this.messageCounter == 1 && content.toUpperCase() == "М")
+    {
+      console.log("[Cuck mode] Activated");
+
+      this.cuckMode = true;
+      this.writeMessageSimulated(this.getRandomString(this.cuckGenderReply)
+          + (this.booleanRandom() ? " " : "")
+          + (this.booleanRandom() ? Math.round(12 + Math.random() * 12) : ""));
+      return;
+    }
+
+    if (this.insulted && content.match(/про(cти|щен)|извин/ig) != null)
     {
       this.insulted = false;
-      this.writeMessageSimulated("Ладно. Прощаю.", () => {
+      this.writeMessageSimulated(this.getRandomString(this.forgives), () => {
           this.askEquationSimulated();
       });
       return;
     }
 
-    if (this.insulted) {
-      if (Math.random() <= 0.5)
-      {
-        this.writeMessageSimulated(this.getRandomString(this.insultedReplies));
-      }
-
+    if (content == "💩👍")
+    {
+      this.writeMessageInstant("Протокол завершения диалога.");
+      this.running = false;
       return;
     }
 
-    if (content.match(/еб|бля|ху[йе]|су(ч)?к/g) != null)
+    // Вызов справки
+    if (content == "/help")
+    {
+      this.writeMessageInstant("Чат-бот \"Токийский Гуль\".\n" +
+          "Версия: FIOR210913\n" +
+          "***\n" +
+          "Бот пишется в познавательно-развлекательных целях, без " +
+            " преследования какой-либо материальной или коммерческой выгоды.\n" +
+            "Пожалуйста, помогите улучшить проект предложив правки в исходный " +
+            "код. Спасибо за проявленный интерес!\n" +
+          "***\n" +
+          "Список команд:\n" +
+          "/help — Вызов справки\n" +
+          "/gawr — Акула Гура\n" +
+          "/praise — Зачитать похвалу\n" +
+          "/github — Ссылка на репозиторий исходного кода\n"
+      );
+      return;
+    }
+
+    // Выразить обиду, если она есть
+    if (this.insulted) {
+      this.expressResentment();
+      return;
+    }
+
+    // Назвать своё имя
+    if (content.match(/как.+зовут/ig) != null)
+    {
+      console.log("[Bot] Name question triggered");
+      this.writeMessageSimulated(this.getRandomString(this.kanekiNames), () => {
+          this.askEquationSimulated();
+      });
+      return;
+    }
+
+    // Посчитать пример заданный собеседником
+    let capture;
+    if ((capture = content.match(/(\d+\s*[\-+\/\*]\s*\d+)/g)) != null)
+    {
+      let answer = eval(capture[0]);
+      let message = "";
+
+      if (!isFinite(answer))
+      {
+        let variants = [
+          "нельзя",
+          "на ноль делить нельзя",
+          "совсем больной на ноль делить?",
+          "плюс минус бесконечность"
+        ];
+        message = this.getRandomString(variants);
+      }
+      else if (answer == 300)
+      {
+        message = "Тракторист сегодня я.";
+      }
+      else if (answer == 1488)
+      {
+        message = "Осуждаю.";
+      }
+      else
+      {
+        message = answer.toString();
+      }
+
+      this.writeMessageSimulated(message, () => {
+          this.askEquationSimulated();
+      });
+    }
+
+    // Оскорбиться на мат 
+    if (content.match(/[её]б(а|[ёе][штн])|бля|ху[ийе]|су(ч)?к|пид[оае]|п[иeё]зд/ig) != null)
     {
 
-      if (this.swearCautionedTimes++ == 1)
+      this.swearCautionedTimes++;
+
+      if (this.swearCautionedTimes == 1)
       {
-        this.writeMessageSimulated("Ну я же попросил не материться");
-        return;
+        // Бабушка в комнате
+        this.writeMessageSimulated(
+            this.getRandomString(this.noSwearPrays),
+            () => {
+              this.askEquationSimulated();
+            }
+        );
       }
 
-      if (this.swearCautionedTimes++ >= 2)
+      // Последнее предупреждение
+      else if (this.swearCautionedTimes == 2)
       {
-        this.writeMessageSimulated(this.getRandomString(this.insultedReplies));
+        this.writeMessageSimulated(this.getRandomString(this.finalSwearCautions));
+      }
+
+      // Обидеться, если не помогло
+      else 
+      {
         this.insulted = true;
-        return;
+        this.expressResentment();
       }
 
-      this.writeMessageSimulated(
-          this.getRandomString(this.noSwearPrays),
-          () => {
-            this.askEquationSimulated();
-          }
-      );
       return;
     }
 
     if (content == "/gawr")
     {
-      this.writeMessageSimulated(
-          "А",
-          () => {
-            this.askEquationSimulated(); 
-          }
-      );
+      this.writeMessageInstant(this.gawrGura);
+      this.askEquationSimulated(); 
 
       return;
     }
@@ -223,21 +513,7 @@ class Bot {
       return;
     }
 
-    if (content == "/help")
-    {
-      this.writeMessageSimulated("Чат-бот \"Токийский Гуль\".\n" +
-          "Версия: FIOR210912\n" +
-          "***\n" +
-          "Список команд:\n" +
-          "/help — Вызов справки\n" +
-          "/gawr — Акула Гура\n" +
-          "/praise — Зачитать похвалу\n" +
-          "/sources — Исходный код"
-      );
-      return;
-    }
-
-    if (content.match(/(бот|код|[з|c]даюсь|это\?|устал|хватит)/g) != null
+    if (content.match(/(бот|код|[зc]даюсь|это\?|устал|хватит)/ig) != null
         || content[0] == '/')
     {
       this.writeMessageSimulated("Неизвестная команда. Для справки наберите /help");
@@ -264,6 +540,25 @@ class Bot {
           return;
         }
 
+        if (this.desiredAnswer < 900)
+        {
+          if (this.failCounter == 0)
+          {
+            this.failCounter++;
+            this.writeMessageSimulated(this.getRandomString(this.esuranceQuestions), () => {
+              this.askEquationSimulated();
+            });
+            return;
+          }
+          else {
+            this.desiredAnswer = 993;
+            this.writeMessageSimluated(this.getRandomString(this.disappointments), () => {
+              this.askEquationSimulated();
+            });
+            return;
+          }
+        }
+
         this.desiredAnswer = 993;
       }
     }
@@ -273,12 +568,21 @@ class Bot {
         console.log("[Bot] Trigger motivational message");
         this.unrelatedCounter = 0;
 
-        this.writeMessageSimulated(
-            this.getRandomString(this.motivationStrings),
-            () => {
-              this.askEquationSimulated();
-            }
-        );
+        if (this.cuckMode)
+        {
+          this.writeMessageSimulated("...",
+              () => {
+                this.askEquationSimulated(); 
+              });
+        }
+        else {
+          this.writeMessageSimulated(
+              this.getRandomString(this.motivationStrings),
+              () => {
+                this.askEquationSimulated();
+              }
+          );
+        }
 
         return;
       }
