@@ -10,6 +10,7 @@ class Bot {
     this.cuckMode = false;
     this.failCounter = 0;
     this.running = true;
+    this.age = null;
 
     this.cuckGenderReply = [
       "д",
@@ -142,7 +143,7 @@ class Bot {
       "Здоровья маме"
     ];
 
-    this.gawrGura = [
+    this.gawrGura =
       "--------------------------------------------------------------------------------------------------------mш:------------------\n" +
       "-----------------------------------------------------------------------------------------------------------mцL---------------\n" +
       "-----------------------------------------------------------------------------------------------------------нfбШo:-----------\n" +
@@ -174,8 +175,7 @@ class Bot {
       "----ттunn-------------DgjЁЁБ@@BBjJJgЮДJggДahФDДgggЫ#gДДBB@@Ё@JJЖ:-----------------------\n" +
       "::-------::--------------hjДБRбБ@RБRБRBsmJДБBgggggД@Бg:тz@ЙЁRЁЁjЁRЙЁjg#-----------------------\n" +
       "***\n" +
-      "А"
-    ];
+      "А";
 
     chat.addEventListener(chat.Event.CONNECTED, this.onConnect.bind(this));
     chat.addEventListener(chat.Event.DISCONNECTED, this.resetState.bind(this));
@@ -203,6 +203,7 @@ class Bot {
     this.cuckMode = false;
     this.failCounter = 0;
     this.running = true;
+    this.age = null;
 
     clearTimeout(this.greetingTimerHandle);
     this.greetingTimerHandle = null;
@@ -211,9 +212,31 @@ class Bot {
     this.writingTimerHandle = null;
   }
 
-  booleanRandom()
+  getAgeSuffix(age)
   {
-    return Math.random() < 0.5;
+    let str;
+    let count = age % 100;
+
+    if (count >= 5 && count <= 20) {
+      str = 'лет';
+    } else {
+      count = count % 10;
+
+      if (count == 1) {
+        str = 'год';
+      } else if (count >= 2 && count <= 4) {
+        str = 'года'; 
+      } else {
+        txt = 'лет';
+      }
+    }
+
+    return str;
+  }
+
+  booleanRandom(probability = 0.5)
+  {
+    return Math.random() < probability;
   }
 
   expressResentment()
@@ -249,13 +272,18 @@ class Bot {
           callback();
         }
 
-      }, 250 * message.length + Math.random() * (250 * message.length));
+      }, 250 * message.length + Math.random() * (200 * message.length));
     }, 3000 + Math.random() * 3000);
   }
 
   askEquationSimulated()
   {
     this.writeMessageSimulated((this.desiredAnswer + 7) + "-7?", null);
+  }
+
+  isFloat(n)
+  {
+    return Number(n) === n && n % 1 !== 0;
   }
 
   onConnect()
@@ -342,10 +370,21 @@ class Bot {
     {
       console.log("[Cuck mode] Activated");
 
+      this.age = Math.round(14 + Math.random() * 10);
+
       this.cuckMode = true;
-      this.writeMessageSimulated(this.getRandomString(this.cuckGenderReply)
-          + (this.booleanRandom() ? " " : "")
-          + (this.booleanRandom() ? Math.round(12 + Math.random() * 12) : ""));
+
+      let spaceExclusion = false;
+      this.writeMessageSimulated(
+          this.getRandomString(this.cuckGenderReply) +
+
+          ((spaceExclusion = this.booleanRandom(0.8)) ? " " : "") +
+
+          (this.booleanRandom(0.2) ?
+            this.age +
+            (this.booleanRandom(0.2) ? " " + this.getAgeSuffix(this.age) : "") : "") +
+     
+          (this.booleanRandom(0.3) ? ")" : ""));
       return;
     }
 
@@ -355,6 +394,12 @@ class Bot {
       this.writeMessageSimulated(this.getRandomString(this.forgives), () => {
           this.askEquationSimulated();
       });
+      return;
+    }
+
+    if (content.match(/\/stop|\/exit|\/quit|\/halt|\/break|\/pause/g) != null)
+    {
+      this.writeMessageSimulated("Недостаточно прав для выполнения команды.");
       return;
     }
 
@@ -392,7 +437,7 @@ class Bot {
     }
 
     // Назвать своё имя
-    if (content.match(/как.+зовут/ig) != null)
+    if (content.match(/(?=.*как)(?=.*з(ов|ва))|имя/ig) != null)
     {
       console.log("[Bot] Name question triggered");
       this.writeMessageSimulated(this.getRandomString(this.kanekiNames), () => {
@@ -401,9 +446,37 @@ class Bot {
       return;
     }
 
+    // Назвать возраст 
+    if (content.match(/(?=.*ск)(?=.*((?<=[\s,.:;"']|^)л+ет+(?=[\s,.:;"'?]|$)))|возраст/gi) != null)
+    {
+      console.log("[Bot] Age question triggered");
+
+      if (!Number.isInteger(this.age))
+      {
+        if (this.booleanRandom())
+        {
+          this.age = Math.round(12 + Math.random() * 30);
+        }
+        else {
+          this.age = 18;
+        }
+      }
+
+      this.writeMessageSimulated(
+          this.age +
+          (this.booleanRandom() ?
+            (this.booleanRandom() ? " " : "") +
+            (this.booleanRandom() ? this.getAgeSuffix(this.age) : "") : ""),
+          () => {
+              this.askEquationSimulated();
+          }
+      );
+      return;
+    }
+
     // Посчитать пример заданный собеседником
     let capture;
-    if ((capture = content.match(/(\d+\s*[\-+\/\*]\s*\d+)/g)) != null)
+    if ((capture = content.match(/(\d+\.?\d*\s*[\-+\/\*]\s*\d+\.?\d*)/g)) != null)
     {
       let answer = eval(capture[0]);
       let message = "";
@@ -418,16 +491,21 @@ class Bot {
         ];
         message = this.getRandomString(variants);
       }
-      else if (answer == 300)
+      else if (Math.floor(answer) == 300)
       {
         message = "Тракторист сегодня я.";
       }
-      else if (answer == 1488)
+      else if (Math.floor(answer) == 1488)
       {
         message = "Осуждаю.";
       }
       else
       {
+        if (this.isFloat(answer))
+        {
+          answer = parseFloat(answer.toFixed(2));
+        }
+
         message = answer.toString();
       }
 
@@ -502,11 +580,11 @@ class Bot {
     }
 
 
-    if (content == "/sources")
+    if (content == "/github")
     {
-      this.writeMessageSimulated(
+      this.writeMessageInstant(
           "Репозиторий исходного кода на GitHub:\n" +
-          "https://github.com/Philsoph228/fior\n" +
+          "https://github.com/Philosoph228/fior\n" +
           "***\n" +
           "Буду признателен за Ваш вклад в улучшение проекта ❤\n"
       );
